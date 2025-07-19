@@ -1,0 +1,90 @@
+import java.util.*;
+
+public class StudentGradeTracker {
+    private static Map<String, List<Double>> studentGrades = new HashMap<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n=== Student Grade Tracker ===");
+            System.out.println("1. Add Student and Grades");
+            System.out.println("2. View All Students");
+            System.out.println("3. Calculate Average Grade");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option (1-4): ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    addStudentGrades();
+                    break;
+                case 2:
+                    viewAllStudents();
+                    break;
+                case 3:
+                    calculateAverageGrade();
+                    break;
+                case 4:
+                    System.out.println("Exiting program. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        } while (choice != 4);
+    }
+
+    private static void addStudentGrades() {
+        System.out.print("Enter student name: ");
+        String name = scanner.nextLine();
+
+        List<Double> grades = new ArrayList<>();
+        String input;
+        do {
+            System.out.print("Enter grade (or type 'done' to finish): ");
+            input = scanner.nextLine();
+            if (!input.equalsIgnoreCase("done")) {
+                try {
+                    double grade = Double.parseDouble(input);
+                    grades.add(grade);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a numeric grade.");
+                }
+            }
+        } while (!input.equalsIgnoreCase("done"));
+
+        studentGrades.put(name, grades);
+        System.out.println("Grades added for " + name);
+    }
+
+    private static void viewAllStudents() {
+        if (studentGrades.isEmpty()) {
+            System.out.println("No student records found.");
+            return;
+        }
+        System.out.println("\n--- Student Records ---");
+        for (Map.Entry<String, List<Double>> entry : studentGrades.entrySet()) {
+            System.out.println("Student: " + entry.getKey());
+            System.out.println("Grades: " + entry.getValue());
+        }
+    }
+
+    private static void calculateAverageGrade() {
+        System.out.print("Enter student name to calculate average: ");
+        String name = scanner.nextLine();
+
+        List<Double> grades = studentGrades.get(name);
+        if (grades == null || grades.isEmpty()) {
+            System.out.println("No grades found for " + name);
+            return;
+        }
+
+        double sum = 0;
+        for (double grade : grades) {
+            sum += grade;
+        }
+        double average = sum / grades.size();
+        System.out.printf("Average grade for %s: %.2f%n", name, average);
+    }
+}
